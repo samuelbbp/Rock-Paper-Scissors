@@ -1,89 +1,127 @@
 const rock = "rock";
 const paper = "paper";
 const scissors = "scissors";
+let humanScore = 0;
+let computerScore = 0;
+let humanChoice = "";
 
+// Función para obtener la elección del ordenador
 function getComputerChoice() {
-    let choice;
-    let randomNumber = Math.random() * 3;
-
-    if (randomNumber < 1) {
-        choice = rock;
-    } else if (randomNumber >= 1 && randomNumber < 2) {
-        choice = paper;
-    } else {
-        choice = scissors;
-    }
-
-    return choice;
+  let choice = Math.floor(Math.random() * 3);
+  switch (choice) {
+    case 0:
+      choice = rock;
+      break;
+    case 1:
+      choice = paper;
+      break;
+    case 2:
+      choice = scissors;
+      break;
+  }
+  return choice;
 }
 
-function getHumanChoice() {
-    let choice = prompt("Choose: rock, paper or scissors");
-    return choice.toLowerCase();
+// Función para mostrar el resultado en el div "show"
+function displayResult(message) {
+  show.textContent = message;
 }
 
+// Función que controla cada ronda
+function playRound(humanChoice, computerChoice) {
+  let resultMessage = "";
+
+  if (humanChoice === rock && computerChoice === scissors) {
+    humanScore++;
+  } else if (humanChoice === rock && computerChoice === paper) {
+    computerScore++;
+  } else if (humanChoice === paper && computerChoice === rock) {
+    humanScore++;
+  } else if (humanChoice === paper && computerChoice === scissors) {
+    computerScore++;
+  } else if (humanChoice === scissors && computerChoice === paper) {
+    humanScore++;
+  } else if (humanChoice === scissors && computerChoice === rock) {
+    computerScore++;
+  } else if (humanChoice === computerChoice) {
+  }
+}
+
+// Función que controla el juego completo
 function playGame() {
-    let humanScore = 0;
-    let computerScore = 0;
+  let gameResult = "";
 
-    function playRound(humanChoice, computerChoice) {
-        if (humanChoice === rock && computerChoice === scissors) {
-            console.log("You win! rock beats scissors");
-            humanScore = humanScore + 1;
-        } else if (humanChoice === rock && computerChoice === paper) {
-            console.log("You lose! paper beats rock");
-            computerScore = computerScore + 1;
-        } else if (humanChoice === rock && computerChoice === rock) {
-            console.log("It's a draw!");
-        } else if (humanChoice === paper && computerChoice === rock) {
-            console.log("You win! paper beats rock");
-            humanScore = humanScore + 1;
-        } else if (humanChoice === paper && computerChoice === scissors) {
-            console.log("You lose! scissors beats paper");
-            computerScore = computerScore + 1;
-        } else if (humanChoice === paper && computerChoice === paper) {
-            console.log("It's a draw!");
-        } else if (humanChoice === scissors && computerChoice === rock) {
-            console.log("You lose! rock beats scissors");
-            computerScore = computerScore + 1;
-        } else if (humanChoice === scissors && computerChoice === paper) {
-            console.log("You win! scissors beats paper");
-            humanScore = humanScore + 1;
-        } else if (humanChoice === scissors && computerChoice === scissors) {
-            console.log("It's a draw!");
-        }
-    }
+  if (humanScore > computerScore) {
+    gameResult =
+      "¡Has ganado!, vuestra puntuación es de: " +
+      humanScore +
+      "," +
+      computerScore;
+  } else if (humanScore == computerScore) {
+    gameResult =
+      "¡Empate!, vuestra puntuación es de:" + humanScore + "," + computerScore;
+  } else {
+    gameResult =
+      "¡Has perdido!, vuestra puntuación es de:" +
+      humanScore +
+      "," +
+      computerScore;
+  }
 
-    // Llamadas a playRound cinco veces
-    let humanChoice1 = getHumanChoice();
-    let computerChoice1 = getComputerChoice();
-    playRound(humanChoice1, computerChoice1);
+  displayResult(gameResult);
 
-    let humanChoice2 = getHumanChoice();
-    let computerChoice2 = getComputerChoice();
-    playRound(humanChoice2, computerChoice2);
-
-    let humanChoice3 = getHumanChoice();
-    let computerChoice3 = getComputerChoice();
-    playRound(humanChoice3, computerChoice3);
-
-    let humanChoice4 = getHumanChoice();
-    let computerChoice4 = getComputerChoice();
-    playRound(humanChoice4, computerChoice4);
-
-    let humanChoice5 = getHumanChoice();
-    let computerChoice5 = getComputerChoice();
-    playRound(humanChoice5, computerChoice5);
-
-    console.log(`Final Scores - Human: ${humanScore}, Computer: ${computerScore}`);
-
-    if (humanScore > computerScore) {
-        console.log("You win the game!");
-    } else if (computerScore > humanScore) {
-        console.log("Computer wins the game!");
-    } else {
-        console.log("The game is a draw!");
-    }
+  // Condición para finalizar el juego cuando uno llega a 5 puntos
+  if (humanScore == 5 || computerScore == 5) {
+    displayResult(
+      "Se acabó. " + (humanScore == 5 ? "¡Ganaste!" : "Has perdido.")
+    );
+    removeButtons(); // Desactivar botones cuando el juego termina
+  }
 }
 
-playGame();
+// Función para desactivar los botones
+function removeButtons() {
+  rockButton.remove();
+  paperButton.remove();
+  scissorsButton.remove();
+}
+
+// Selección del DOM y creación de botones
+const container = document.querySelector(".buttons");
+const show = document.createElement("div");
+const body = document.querySelector("body");
+const container2 = document.createElement("div");
+const rockButton = document.createElement("button");
+const paperButton = document.createElement("button");
+const scissorsButton = document.createElement("button");
+
+// Configuración de los botones y el contenedor
+container.appendChild(rockButton);
+container2.appendChild(show);
+body.appendChild(container2);
+container2.classList.add("container");
+show.classList.add("show");
+rockButton.textContent = "Piedra";
+container.appendChild(paperButton);
+paperButton.textContent = "Papel";
+container.appendChild(scissorsButton);
+scissorsButton.textContent = "Tijeras";
+
+// Event listeners para los botones
+rockButton.addEventListener("click", function () {
+  humanChoice = rock;
+  playRound(humanChoice, getComputerChoice());
+  playGame();
+});
+
+paperButton.addEventListener("click", function () {
+  humanChoice = paper;
+  playRound(humanChoice, getComputerChoice());
+  playGame();
+});
+
+scissorsButton.addEventListener("click", function () {
+  humanChoice = scissors;
+  playRound(humanChoice, getComputerChoice());
+  playGame();
+});
